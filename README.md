@@ -40,10 +40,10 @@ En AI der hjælper med at skrive kode, den er bygget på OpenAI's GPT-3, og er e
 
 ## Eksempler
 
-- [AzureADGraph.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/AzureADGraph.ps1)
-- [ExchangeOnline.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/ExchangeOnline.ps1)
-- [REST-API.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/REST-API.ps1)
-- [ObjektTyper.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/ObjektTyper.ps1)
+- [AzureADGraph.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/AzureADGraph.ps1){:target="_blank"}
+- [ExchangeOnline.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/ExchangeOnline.ps1){:target="_blank"}
+- [REST-API.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/REST-API.ps1){:target="_blank"}
+- [ObjektTyper.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/ObjektTyper.ps1){:target="_blank"}
 
 ## Excel modul
 
