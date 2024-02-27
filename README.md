@@ -40,7 +40,17 @@ En AI der hjælper med at skrive kode, den er bygget på OpenAI's GPT-3, og er e
 
 ## Eksempler
 
-- [AzureADGraph.ps1](./AzureADGraph.ps1)
-- [ExchangeOnline.ps1](./ExchangeOnline.ps1)
-- [REST-API.ps1](./REST-API.ps1)
-- [ObjektTyper.ps1](./ObjektTyper.ps1)
+- [AzureADGraph.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/AzureADGraph.ps1)
+- [ExchangeOnline.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/ExchangeOnline.ps1)
+- [REST-API.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/REST-API.ps1)
+- [ObjektTyper.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/ObjektTyper.ps1)
+
+## Excel modul
+
+Import Excel er et modul til at arbejde med Excel filer, det er et modul der er bygget på .NET og er derfor meget hurtigt, det kan bruges til at læse og skrive til Excel filer, og kan også bruges til at lave grafer og diagrammer.
+
+Link til projekt: https://github.com/dfinke/ImportExcel
+
+```powershell
+Install-Module ImportExcel -Scope AllUsers
+```
