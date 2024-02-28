@@ -1,5 +1,5 @@
 # Connect to Microsoft Graph API using Azure AD
-Connect-MGGraph -scopes "User.Read.All", "AuditLog.Read.All"
+Connect-MGGraph -Scopes "User.Read.All", "AuditLog.Read.All"
 
 # Show my current scope
 $context = Get-MGContext
