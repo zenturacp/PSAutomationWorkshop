@@ -9,6 +9,7 @@
 - Volume game, mange kunder, mange opgaver
 - Fra Amiga 500 til Azure og alt imellem
 - AZ-* Certificeret
+- Nutanix Technology Champion
 - DevOps / Automation / Scripting
 - En "Doven" IT-mand er den bedste IT-mand
 
@@ -56,10 +57,209 @@ En AI der hjælper med at skrive kode, den er bygget på OpenAI's GPT-3, og er e
 
 ## Eksempler
 
-- [AzureADGraph.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/AzureADGraph.ps1){:target="_blank"}
-- [ExchangeOnline.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/ExchangeOnline.ps1){:target="_blank"}
-- [REST-API.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/REST-API.ps1){:target="_blank"}
-- [ObjektTyper.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/ObjektTyper.ps1){:target="_blank"}
+Herunder er nogle hands-on eksempler vi kan gennemgå, meget af det er lavet med CoPilot.
+
+### AzureADGraph
+
+```powershell
+# Connect to Microsoft Graph API using Azure AD
+Connect-MGGraph -UseDeviceCode -scopes "User.Read.All", "AuditLog.Read.All"
+
+# Show my current scope
+$context = Get-MGContext
+$context.Scopes
+
+# Get all users
+$allUsers = Get-MGUser
+
+# Get Properties
+# https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#properties
+
+$properties = @(
+    "usageLocation",
+    "department",
+    "userPrincipalName",
+    "id",
+    "displayName",
+    "jobTitle",
+    "mail",
+    "licenseAssignmentStates",
+    "lastPasswordChangeDateTime",
+    "assignedLicenses",
+    "assignedPlans"
+)
+
+$allUsers = Get-MgUser -userid "a13a5e5a-38c5-4b39-8c39-9bbb0c6f11e3" -Property $properties
+$allUsers | Format-List
+```
+
+[Link til AzureADGraph.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/AzureADGraph.ps1){:target="_blank"}
+
+
+### Exchange Online
+
+I dette eksemple samler vi en masse viden fra forskellige powershell snippets og ender med at eksportere i Excel format til videre gennemgang.
+
+```powershell
+# Installer Exchange Online PowerShell Module
+Install-Module -Name ExchangeOnlineManagement -Scope AllUsers
+
+# Import Module
+Import-Module ExchangeOnlineManagement
+
+# Connect to Exchange Online
+Connect-ExchangeOnline -Device
+
+# Get All Mailboxes
+$AllMailboxes = Get-EXOMailbox
+$AllMailboxes | Select-Object -Property "DisplayName", "UserPrincipalName", "PrimarySmtpAddress"
+
+$items = @()
+
+# Get mailbox sizes
+foreach($mailbox in $AllMailboxes){
+    $mailboxSize = Get-EXOMailboxStatistics -Identity $mailbox.UserPrincipalName
+    $items += $mailboxSize | Select-Object -Property "DisplayName", "TotalItemSize", "ItemCount"
+}
+
+# Class til rapport
+class Mailbox{
+    [string]$DisplayName
+    [string]$UserPrincipalName
+    [Int64]$TotalItemSizeBytes
+    [int]$ItemCount
+    [bool]$IsSharedMailbox = $false
+    [string]$EmailAddresses
+    [string]$MailboxLanguage
+}
+
+$items = @()
+
+foreach($mailbox in $AllMailboxes){
+    $mailboxSize = Get-EXOMailboxStatistics -Identity $mailbox.UserPrincipalName
+    $item = [Mailbox]::new()
+    $item.DisplayName = $mailbox.DisplayName
+    $item.UserPrincipalName = $mailbox.UserPrincipalName
+    $item.TotalItemSizeBytes = $mailboxSize.TotalItemSize.Value.ToBytes()
+    $item.ItemCount = $mailboxSize.ItemCount
+    if($mailbox.RecipientTypeDetails -eq "SharedMailbox"){
+        $item.IsSharedMailbox = $true
+    }
+    # Change email addresses from object and strip SMTP: from the string
+    $item.EmailAddresses = ($mailbox.EmailAddresses | ForEach-Object { $_ -ireplace "SMTP:" }) -join ","
+    # Get Regional Settings
+    $mailboxSettings = Get-MailboxRegionalConfiguration -Identity $mailbox.UserPrincipalName
+    if($mailboxSettings.Language){
+        $item.MailboxLanguage = $mailboxSettings.Language
+    } else {
+        $item.MailboxLanguage = "Unset"
+    }
+    $items += $item
+}
+
+# Permission Report
+
+foreach($mailbox in $AllMailboxes){
+    $mailboxPermissions = Get-EXOMailboxPermission -Identity $mailbox.UserPrincipalName
+    $permissions = $mailboxPermissions | Select-Object -Property "User", "AccessRights", "IsInherited", "Deny" | Where-Object { $_.User -notlike "NT AUTHORITY\SELF" }
+    if($permissions){
+        $customObject = [PSCustomObject]@{
+            Mailbox = $mailbox.DisplayName
+            AccessGrantedTo = $permissions.User
+            AccessRights = $permissions.AccessRights
+            IsInherited = $permissions.IsInherited
+            Deny = $permissions.Deny
+        }
+        $customObject    
+    }
+}
+
+# Gem rapport som JSON
+$items | ConvertTo-Json | Out-File -FilePath ".\MailboxReport.json" -Force
+
+# Gem som Excel
+$items | Export-Excel -Path ".\MailboxReport.xlsx" -WorksheetName "MailboxReport" -AutoSize -AutoFilter -FreezeTopRow -BoldTopRow
+
+# Sæt regional settings på mailbox
+foreach($mailbox in $items){
+    if($mailbox.MailboxLanguage -eq "Unset"){
+        Set-MailboxRegionalConfiguration -Identity $mailbox.UserPrincipalName -Language da-DK -LocalizeDefaultFolderName:$true
+    }
+}
+```
+
+[Link til ExchangeOnline.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/ExchangeOnline.ps1){:target="_blank"}
+
+### Rest API
+
+I dette eksemple forbinder vi til Chuck Norris API og henter en joke og efterfølgende udbygger med kategorier
+
+```powershell
+# Chuck Norris API
+
+$randomJoke = Invoke-RestMethod -Uri "https://api.chucknorris.io/jokes/random"
+$randomJoke
+
+# Selve joken
+$randomJoke.value
+
+# Kategorier
+$categories = Invoke-RestMethod -Uri "https://api.chucknorris.io/jokes/categories"
+
+# List kategoier
+$categories
+
+$categories | Out-GridView -PassThru | ForEach-Object {
+    $joke = Invoke-RestMethod -Uri "https://api.chucknorris.io/jokes/random?category=$_"
+    $joke.value
+}
+```
+
+[Link til REST-API.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/REST-API.ps1){:target="_blank"}
+
+### Objekt typer
+
+Objekter er typisk brugt til at strukturere / samle data fra forskellige sources og lave dine egne objekter, det kan være fra en SQL database, en API, eller en CSV fil.
+
+```powershell
+# Custom Object
+$CustomObject = [PSCustomObject]@{
+    Name = "John Doe"
+    Age = 25
+    City = "New York"
+}
+$CustomObject
+
+# Class
+class Person{
+    [string]$Name
+    [int]$Age
+    [string]$City
+}
+$ClassObject = [Person]::new()
+$ClassObject.Name = "John Doe"
+$ClassObject.Age = 25
+$ClassObject.City = "New York"
+$ClassObject
+
+# Class med metoder
+class PersonExtended{
+    [string]$Name
+    [int]$Age
+    [string]$City
+
+    [string] GetInfo(){
+        return "Name: $($this.Name), Age: $($this.Age), City: $($this.City)"
+    }
+}
+$ClassObject = [PersonExtended]::new()
+$ClassObject.Name = "John Doe"
+$ClassObject.Age = 25
+$ClassObject.City = "New York"
+$ClassObject.GetInfo()
+```
+
+[Link til ObjektTyper.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/ObjektTyper.ps1){:target="_blank"}
 
 ## Excel modul
 
