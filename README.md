@@ -262,6 +262,48 @@ $ClassObject.GetInfo()
 
 [Link til ObjektTyper.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/ObjektTyper.ps1){:target="_blank"}
 
+
+### Andre små eksempler
+
+Her er bare nogle små eksempler på at hente ting og gemme som variabler og gemme indhold til senere beregninger eller rapporter.
+
+```powershell
+# Hent filer i mappen
+Get-ChildItem
+
+# Hent filer i mappen men gem dem i en variable
+$files = Get-ChildItem
+
+# Skriv filerne i objektet ud
+$files
+
+# Skriv filerne ud i Liste form
+$files | Format-List
+
+# Skriv filerne ud i GridView
+$files | Out-GridView
+
+# Vælge filer ud fra Gridview
+$chosenFiles = $files | Out-GridView -PassThru
+
+# Vise de valgte filer
+$chosenFiles
+
+# Gem data som Json
+Get-Service | ConvertTo-Json -depth 3 | Set-Content -Path "Services.json"
+
+# Gem data som CSV
+Get-Service | Export-Csv -Path "Services.csv" -NoTypeInformation
+
+# Gem data som XML (Objekter med type)
+Get-Service | Export-Clixml -Path "Services.xml"
+
+# Gem data som Excel
+Get-Service | Export-Excel -Path "Services.xlsx" -Show -AutoSize -AutoFilter -FreezeTopRow -BoldTopRow
+```
+
+[Link til SmallSamples.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/SmallSamples.ps1){:target="_blank"}
+
 ## Excel modul
 
 Import Excel er et modul til at arbejde med Excel filer, det er et modul der er bygget på .NET og er derfor meget hurtigt, det kan bruges til at læse og skrive til Excel filer, og kan også bruges til at lave grafer og diagrammer.
