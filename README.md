@@ -290,3 +290,10 @@ Azure Function Apps er en service i Azure der kan køre kode, det kan være **Po
 
 [Function App eksemple](https://portal.azure.com/#@advokat-jensen.dk/resource/subscriptions/caaf1a53-3a0a-42e4-9688-4aac8f95a2d7/resourceGroups/PSWorkshop/providers/Microsoft.Web/sites/psworkshop/appServices)
 
+## Bare rolig - AI Brain fart!
+
+I bliver ikke arbejdsløse forløbig fordi AI er opfundet!
+
+![AIGoneWrong](./Assets/barerolig.png)
+
+# Spørgsmål?
