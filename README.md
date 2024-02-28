@@ -61,9 +61,11 @@ Herunder er nogle hands-on eksempler vi kan gennemgå, meget af det er lavet med
 
 ### AzureADGraph
 
+Nogle moduler er bare "wrappere" til API'er f.eks. Microsoft.Graph modulet, det laver "OnTheFly" funktioner i PowerShell på baggrund af det API Microsoft har, det giver den fordel at man ikke skal bygge funktioner ind i modulet heletiden, men det giver den udfordring at der ikke er særlig god validering og dokumentation så man er lidt på egen hånd.
+
 ```powershell
 # Connect to Microsoft Graph API using Azure AD
-Connect-MGGraph -UseDeviceCode -scopes "User.Read.All", "AuditLog.Read.All"
+Connect-MGGraph -scopes "User.Read.All", "AuditLog.Read.All"
 
 # Show my current scope
 $context = Get-MGContext
@@ -91,6 +93,34 @@ $properties = @(
 
 $allUsers = Get-MgUser -userid "a13a5e5a-38c5-4b39-8c39-9bbb0c6f11e3" -Property $properties
 $allUsers | Format-List
+
+# Hent signin logs ind i en variabel
+$signInLogs = Get-MgAuditLogSignIn
+
+# Hent signin logs ind i en variabel
+$signInLogs = Get-MgAuditLogSignIn
+
+# Parse og find kun de steder hvor det ikke direkte er gået godt
+$FailedLogins = @()
+$signInLogs | ForEach-Object {
+
+    if($_.Status.ErrorCode -ne "0"){
+        $_object = [PSCustomObject]@{
+            UserDisplayName = $_.UserDisplayName
+            UserPrincipalName = $_.UserPrincipalName
+            AppDisplayName = $_.AppDisplayName
+            CreatedDateTime = $_.CreatedDateTime
+            StatusCode = $_.Status.ErrorCode
+            StatusReason = $_.Status.AdditionalDetails + " " + $_.Status.FailureReason
+        }
+        $FailedLogins += $_object 
+        $_object
+    }
+
+} | Format-Table -AutoSize
+
+# Gem failed logins i Excel
+$FailedLogins | Export-Excel -Path ".\FailedLogins.xlsx" -WorksheetName "FailedLogins" -AutoSize -AutoFilter -FreezeTopRow -BoldTopRow -Show
 ```
 
 [Link til AzureADGraph.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/AzureADGraph.ps1){:target="_blank"}
