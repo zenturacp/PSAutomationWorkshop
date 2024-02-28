@@ -330,7 +330,13 @@ Azure Automation er en service i Azure der kan køre scripts, det kan være **Po
 
 Azure Function Apps er en service i Azure der kan køre kode, det kan være **PowerShell**, Python, C#, Java, Node.js, eller Custom Handler, det kan også køre på en planlagt opgave, eller på en trigger (HTTP, Blob, Queue, EventGrid, EventHub, ServiceBus, Timer, IoT Hub, CosmosDB, Durable Functions, SignalR Service, og Webhooks)
 
-[Function App eksemple](https://portal.azure.com/#@advokat-jensen.dk/resource/subscriptions/caaf1a53-3a0a-42e4-9688-4aac8f95a2d7/resourceGroups/PSWorkshop/providers/Microsoft.Web/sites/psworkshop/appServices)
+[Function App eksemple](https://portal.azure.com/#@advokat-jensen.dk/resource/subscriptions/caaf1a53-3a0a-42e4-9688-4aac8f95a2d7/resourceGroups/PSWorkshop/providers/Microsoft.Web/sites/psworkshop/appServices){:target="_blank"}
+
+[Link til Chuck API](https://psworkshop.azurewebsites.net/api/chuck){:target="_blank"}
+
+[Link til Chuck API med kategori Food](https://psworkshop.azurewebsites.net/api/chuck?category=food){:target="_blank"}
+
+[Link til GetVMs API](https://psworkshop.azurewebsites.net/api/getvms){:target="_blank"}
 
 ## Bare rolig - AI Brain fart!
 
