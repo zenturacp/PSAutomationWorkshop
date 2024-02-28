@@ -65,7 +65,7 @@ Nogle moduler er bare "wrappere" til API'er f.eks. Microsoft.Graph modulet, det 
 
 ```powershell
 # Connect to Microsoft Graph API using Azure AD
-Connect-MGGraph -scopes "User.Read.All", "AuditLog.Read.All"
+Connect-MGGraph -Scopes "User.Read.All", "AuditLog.Read.All"
 
 # Show my current scope
 $context = Get-MGContext
@@ -73,6 +73,10 @@ $context.Scopes
 
 # Get all users
 $allUsers = Get-MGUser
+$allUsers[0] | Format-List
+
+# Ikke alt kommer med - ?!?
+$allUsers | Out-GridView
 
 # Get Properties
 # https://learn.microsoft.com/en-us/graph/api/resources/user?view=graph-rest-1.0#properties
@@ -91,8 +95,10 @@ $properties = @(
     "assignedPlans"
 )
 
-$allUsers = Get-MgUser -userid "a13a5e5a-38c5-4b39-8c39-9bbb0c6f11e3" -Property $properties
-$allUsers | Format-List
+$allUsers = Get-MgUser -Property $properties
+
+# Hent alle brugere og vis i gridview
+$allUsers | Select-Object -Property $properties | Out-GridView
 
 # Hent signin logs ind i en variabel
 $signInLogs = Get-MgAuditLogSignIn
