@@ -8,8 +8,8 @@
 - CTO i Zentura A/S MSP med fokus på små / mellemstore kunder
 - Volume game, mange kunder, mange opgaver
 - Fra Amiga 500 til Azure og alt imellem
-- AZ-* Certificeret
-- Nutanix Technology Champion
+- Past - Nutanix Technology Champion
+- AZ-* Certificeret (Azure - More less alle Cloud Only certificertinger)
 - DevOps / Automation / Scripting
 - En "Doven" IT-mand er den bedste IT-mand
 
@@ -95,8 +95,9 @@ $allUsers | Format-List
 
 [Link til AzureADGraph.ps1](https://github.com/zenturacp/PSAutomationWorkshop/blob/main/AzureADGraph.ps1){:target="_blank"}
 
+### Exchange Online rapport
 
-### Exchange Online
+![ExchangeOnline](./Assets/exchangereport.webp)
 
 I dette eksemple samler vi en masse viden fra forskellige powershell snippets og ender med at eksportere i Excel format til videre gennemgang.
 
